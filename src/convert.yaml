@@ -1,6 +1,6 @@
 Mode: Load               # Should be 'Default', 'Load' or 'Dump'
 Country: United States
-States:
+States: # Remove if Not in North America
   - Oregon
   - Washington
 Zones:

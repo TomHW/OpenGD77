@@ -62,7 +62,7 @@ def get_repeaters(url):
 			#  TODO: Add Digital channels back, excluding them for now
 			# if(rep['Operational Status'] == 'On-air' and (rep['DMR'] == 'No' or rep['FM Analog'] == 'Yes')):
 			if(rep['Operational Status'] == 'On-air' and rep['Use'] == 'OPEN' and rep['FM Analog'] == 'Yes'):
-				print(rep)
+				# print(rep)
 				result.append(rep)
 		return result
 	else:
@@ -120,13 +120,11 @@ def map_rep2chn(rep):
 #	chn[''] = rep['EchoLink Node']
 #	chn[''] = rep['IRLP Node']
 #	chn[''] = rep['Wires Node']
-	if(rep['FM Analog'] == 'Yes'):
+	if(rep['FM Analog'] == 'Yes'):	
 		if('Channel Type' in chn):
 			chn['Channel Type'].append('Analogue')
 		else:
 			chn['Channel Type'] = ['Analogue']
-	chn['Bandwidth (kHz)'] = '25'
-#	chn['Bandwidth (kHz)'] = rep['FM Bandwidth'].replace('.', ',').replace(' kHz', '') if (not rep['FM Bandwidth'] is None) else None
 #	chn[''] = rep['DMR']
 	if(rep['DMR'] == 'Yes'):
 		chn['TG List'] = 'BM'
@@ -134,8 +132,15 @@ def map_rep2chn(rep):
 			chn['Channel Type'].append('Digital')
 		else:
 			chn['Channel Type'] = ['Digital']
+
 	chn['Colour Code'] = rep['DMR Color Code']
 	chn['DMR ID'] = rep['DMR ID']
+	if('FM Bandwidth' in rep):
+		# ROW has 'FM Bandwidth' in response
+		chn['Bandwidth (kHz)'] = rep['FM Bandwidth'].replace('.', ',').replace(' kHz', '') if (not rep['FM Bandwidth'] is None) else None
+	else:
+		chn['Bandwidth (kHz)'] = '25' # NA uses wide band for Analog, overwrite digital narrow band when creating csv	
+
 #	chn[''] = rep['D-Star']
 #	chn[''] = rep['NXDN']
 #	chn[''] = rep['APCO P-25']
@@ -162,6 +167,7 @@ def get_distance(chnDict):
 	return distance(float(chnDict['Latitude']), float(chnDict['Longitude']), lat, lon)
 	# TODO: EU likes commas over periods
 	# return distance(float(chnDict['Latitude'].replace(',', '.')), float(chnDict['Longitude'].replace(',', '.')), lat, lon)
+
 def main(argv):
 	with open("convert.yaml","r") as conffile:
 		data = yaml.load(conffile,Loader=yaml.SafeLoader)
@@ -186,14 +192,13 @@ def main(argv):
 		for state in data['States']:
 			myQuery +=  "&state=" + state 
 
-	#print(myQuery)
+	# print(myQuery)
 
 	if(mode == 'Load'):
 		with open('dump.bin', 'rb') as dumpfile:
 			channels2m = pickle.load(dumpfile)
 			channels70cm = pickle.load(dumpfile)
 	else:
-		# TODO: Url is different for rest of World (ROW), and need to make states part of the Yaml. Only pulling Analog channels for now
 		# 2m Band
 		url = f'{myQuery}&frequency=14%'
 		channels2m = get_repeaters(url)
@@ -243,6 +248,8 @@ def main(argv):
 				wchn ['Channel Type'] = t
 				if (t == 'Digital'):
 					wchn ['Channel Name'] = chn ['Channel Name'].replace(' ', '.')
+					if (myCountry == 'United States' or myCountry == 'Canada'):
+						wchn ['Bandwidth (kHz)'] = '12.5' # Setting to Narrow Band for digital in NA
 				zchannels.append(wchn)
 		# sort channels based on ascending distance in current zone
 		zchannels.sort(key=get_distance)

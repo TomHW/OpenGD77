@@ -162,3 +162,4 @@ cython_debug/
 #.idea/
 src/Channels.csv
 src/Zones.csv
+src/dump.bin
