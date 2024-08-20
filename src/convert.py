@@ -87,27 +87,28 @@ def map_rep2chn(rep):
 	chn['APRS'] = 'No'
 #	chn[''] = rep['State ID']
 #	chn[''] = rep['Rptr ID']
-	chn['Tx Frequency'] = rep['Input Freq']
-	chn['Rx Frequency'] = rep['Frequency']
-	chn['RX Tone'] = rep['TSQ']  # rep['PL'] if rep['PL'] != 'CSQ' else None
-	chn['TX Tone'] = rep['PL'] if rep['PL'] != 'CSQ' else None # Added this
-	chn['Squelch'] = "Disabled"
-	# TODO: EU likes commas over periods
-	# chn['Tx Frequency'] = rep['Input Freq'].replace('.', ',')
-	# chn['Rx Frequency'] = rep['Frequency'].replace('.', ',')
-	# chn['RX Tone'] = rep['PL'].replace('.', ',') if rep['PL'] != 'CSQ' else None
-	# chn['Squelch'] = rep['TSQ'].replace('.', ',')
-
 #	chn[''] = rep['Landmark']
 #	chn[''] = rep['Region']
 #	chn[''] = rep['State']
 #	chn[''] = rep['Country']
-	chn['Latitude'] = rep['Lat']
-	chn['Longitude'] = rep['Long']
-	# TODO: EU likes commas over periods
-	# chn['Latitude'] = rep['Lat'].replace('.', ',')
-	# chn['Longitude'] = rep['Long'].replace('.', ',')
 
+	if (rep['Country'] in ('United States','Canada')):
+		chn['Tx Frequency'] = rep['Input Freq']
+		chn['Rx Frequency'] = rep['Frequency']
+		chn['RX Tone'] = rep['TSQ']  # rep['PL'] if rep['PL'] != 'CSQ' else None
+		chn['TX Tone'] = rep['PL'] if rep['PL'] != 'CSQ' else None # Added this
+		chn['Latitude'] = rep['Lat']
+		chn['Longitude'] = rep['Long']
+	else:
+		# EU likes commas over periods
+		chn['Tx Frequency'] = rep['Input Freq'].replace('.', ',')
+		chn['Rx Frequency'] = rep['Frequency'].replace('.', ',')
+		chn['TX Tone'] = rep['PL'].replace('.', ',') if rep['PL'] != 'CSQ' else None
+		chn['RX Tone'] = rep['TSQ'].replace('.', ',')
+		chn['Latitude'] = rep['Lat'].replace('.', ',')
+		chn['Longitude'] = rep['Long'].replace('.', ',')
+	
+	chn['Squelch'] = "Disabled"
 #	chn[''] = rep['Precise']
 	chn['Channel Name'] = (rep['Callsign'] + ' '  + rep['Nearest City'])[:16]
 #	chn[''] = rep['Use']
@@ -164,9 +165,7 @@ def get_channelNameDistance(chnND):
 
 #Extract channel name from channel dictionary - lambda expression for channel sort
 def get_distance(chnDict):
-	return distance(float(chnDict['Latitude']), float(chnDict['Longitude']), lat, lon)
-	# TODO: EU likes commas over periods
-	# return distance(float(chnDict['Latitude'].replace(',', '.')), float(chnDict['Longitude'].replace(',', '.')), lat, lon)
+	return distance(float(chnDict['Latitude'].replace(',', '.')), float(chnDict['Longitude'].replace(',', '.')), lat, lon)
 
 def main(argv):
 	with open("convert.yaml","r") as conffile:
@@ -180,19 +179,16 @@ def main(argv):
 
 	# Lets figure out what endpoint to hit
 	if (myCountry == 'United States' or myCountry == 'Canada'):
-		myQuery += 'export.php?'
+		myQuery += 'export.php?country=' + myCountry
+		# if States are included add those
+		if 'States' in data.keys():
+			for state in data['States']:
+				myQuery +=  "&state=" + state 
 	else: 
-		myQuery += 'exportROW.php?'
+		myQuery += 'exportROW.php?country=' + myCountry
 
-	# now add country
-	myQuery += "country=" + myCountry
 
-	# if States are included add those
-	if 'States' in data.keys():
-		for state in data['States']:
-			myQuery +=  "&state=" + state 
-
-	# print(myQuery)
+	print(myQuery)
 
 	if(mode == 'Load'):
 		with open('dump.bin', 'rb') as dumpfile:
