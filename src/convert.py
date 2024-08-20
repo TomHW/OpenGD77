@@ -50,17 +50,19 @@ def distance(lat1, lon1, lat2, lon2):
 #Download repeaters from repeaterbook (json format)
 def get_repeaters(url):
 	headers = {
-	    'User-Agent': 'Toms channel creator 0.1',
+	    'User-Agent': 'Toms channel creator 0.2',
 	    'From': 'do3thm@tibeto.de'
 	}
 	response = requests.get(url, headers=headers)
 	if(response.status_code < 400 ):
 		result = []
 		repeaters = json.loads(response.content)['results']
-#		print(repeaters)
+		# print(repeaters)
 		for rep in repeaters:
-			if(rep['Operational Status'] == 'On-air' and (rep['DMR'] == 'Yes' or rep['FM Analog'] == 'Yes')):
-#				print(rep)
+			#  TODO: Add Digital channels back, excluding them for now
+			# if(rep['Operational Status'] == 'On-air' and (rep['DMR'] == 'No' or rep['FM Analog'] == 'Yes')):
+			if(rep['Operational Status'] == 'On-air' and rep['Use'] == 'OPEN' and rep['FM Analog'] == 'Yes'):
+				print(rep)
 				result.append(rep)
 		return result
 	else:
@@ -72,31 +74,42 @@ def map_rep2chn(rep):
 	chn = {}
 	chn['Contact'] = 'None'
 	chn['DMR ID'] = 'None'
-	chn['TS1_TA_Tx'] = 'Off'
-	chn['TS2_TA_Tx ID'] = 'Off'
+	# chn['TS1_TA_Tx'] = 'Off'
+	# chn['TS2_TA_Tx ID'] = 'Off'
 	chn['Power'] = 'Master'
 	chn['Rx Only'] = 'No'
 	chn['Zone Skip'] = 'No'
 	chn['All Skip'] = 'No'
-	chn['TOT'] = 495
+	chn['TOT'] = 0 # Was 495
 	chn['VOX'] = 'No'
 	chn['No Beep'] = 'No'
 	chn['No Eco'] = 'No'
 	chn['APRS'] = 'No'
 #	chn[''] = rep['State ID']
 #	chn[''] = rep['Rptr ID']
-	chn['Tx Frequency'] = rep['Input Freq'].replace('.', ',')
-	chn['Rx Frequency'] = rep['Frequency'].replace('.', ',')
-	chn['RX Tone'] = rep['PL'].replace('.', ',') if rep['PL'] != 'CSQ' else None
-	chn['Squelch'] = rep['TSQ'].replace('.', ',')
+	chn['Tx Frequency'] = rep['Input Freq']
+	chn['Rx Frequency'] = rep['Frequency']
+	chn['RX Tone'] = rep['TSQ']  # rep['PL'] if rep['PL'] != 'CSQ' else None
+	chn['TX Tone'] = rep['PL'] if rep['PL'] != 'CSQ' else None # Added this
+	chn['Squelch'] = "Disabled"
+	# TODO: EU likes commas over periods
+	# chn['Tx Frequency'] = rep['Input Freq'].replace('.', ',')
+	# chn['Rx Frequency'] = rep['Frequency'].replace('.', ',')
+	# chn['RX Tone'] = rep['PL'].replace('.', ',') if rep['PL'] != 'CSQ' else None
+	# chn['Squelch'] = rep['TSQ'].replace('.', ',')
+
 #	chn[''] = rep['Landmark']
 #	chn[''] = rep['Region']
 #	chn[''] = rep['State']
 #	chn[''] = rep['Country']
-	chn['Latitude'] = rep['Lat'].replace('.', ',')
-	chn['Longitude'] = rep['Long'].replace('.', ',')
+	chn['Latitude'] = rep['Lat']
+	chn['Longitude'] = rep['Long']
+	# TODO: EU likes commas over periods
+	# chn['Latitude'] = rep['Lat'].replace('.', ',')
+	# chn['Longitude'] = rep['Long'].replace('.', ',')
+
 #	chn[''] = rep['Precise']
-	chn['Channel Name'] = (rep['Callsign'] + ' '  + rep['Nearest City'])[:15]
+	chn['Channel Name'] = (rep['Callsign'] + ' '  + rep['Nearest City'])[:16]
 #	chn[''] = rep['Use']
 #	chn[''] = rep['Operational Status']
 #	chn[''] = rep['ARES']
@@ -112,7 +125,8 @@ def map_rep2chn(rep):
 			chn['Channel Type'].append('Analogue')
 		else:
 			chn['Channel Type'] = ['Analogue']
-	chn['Bandwidth (kHz)'] = rep['FM Bandwidth'].replace('.', ',').replace(' kHz', '') if (not rep['FM Bandwidth'] is None) else None
+	chn['Bandwidth (kHz)'] = '25'
+#	chn['Bandwidth (kHz)'] = rep['FM Bandwidth'].replace('.', ',').replace(' kHz', '') if (not rep['FM Bandwidth'] is None) else None
 #	chn[''] = rep['DMR']
 	if(rep['DMR'] == 'Yes'):
 		chn['TG List'] = 'BM'
@@ -145,8 +159,9 @@ def get_channelNameDistance(chnND):
 
 #Extract channel name from channel dictionary - lambda expression for channel sort
 def get_distance(chnDict):
-	return distance(float(chnDict['Latitude'].replace(',', '.')), float(chnDict['Longitude'].replace(',', '.')), lat, lon)
-
+	return distance(float(chnDict['Latitude']), float(chnDict['Longitude']), lat, lon)
+	# TODO: EU likes commas over periods
+	# return distance(float(chnDict['Latitude'].replace(',', '.')), float(chnDict['Longitude'].replace(',', '.')), lat, lon)
 def main(argv):
 	with open("convert.yaml","r") as conffile:
 		data = yaml.load(conffile,Loader=yaml.SafeLoader)
@@ -160,10 +175,11 @@ def main(argv):
 			channels2m = pickle.load(dumpfile)
 			channels70cm = pickle.load(dumpfile)
 	else:
+		# TODO: Url is different for rest of World (ROW), and need to make states part of the Yaml. Only pulling Analog channels for now
 		# 2m Band
-		url = f'https://www.repeaterbook.com/api/exportROW.php?country={myCountry}&frequency=14%'
+		url = f'https://www.repeaterbook.com/api/export.php?country={myCountry}&state=oregon&state=washington&mode=analog&frequency=14%'
 		channels2m = get_repeaters(url)
-		url = f'https://www.repeaterbook.com/api/exportROW.php?country={myCountry}&frequency=43%'
+		url = f'https://www.repeaterbook.com/api/export.php?country={myCountry}&state=oregon&state=washington&mode=analog&frequency=4%'
 		channels70cm = get_repeaters(url)
 		if(mode == 'Dump'):
 			with open('dump.bin', 'wb') as dumpfile:
@@ -190,7 +206,9 @@ def main(argv):
 					channelName = chn ['Channel Name'].replace(' ', '.')
 				else:
 					channelName = chn ['Channel Name']
-				zone = zoneName + ' ' + t
+				zone = zoneName
+				# TODO: Zone name could be better
+				# zone = zoneName + ' ' + t
 				if(zone in channelTypesDict):
 					channelTypesDict[zone].append([channelName, dist])
 				else:
@@ -214,7 +232,7 @@ def main(argv):
 		channels += zchannels
 
 	with open('Channels.csv', 'wt', newline='') as csvoutfile:
-		chnwriter = csv.writer(csvoutfile, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+		chnwriter = csv.writer(csvoutfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 		chnwriter.writerow(channelHeading)
 #		channels.sort(key=get_channelName)
 		chno = 1
@@ -224,7 +242,7 @@ def main(argv):
 			chno += 1
 
 	with open('Zones.csv', 'wt', newline='') as csvoutfile:
-		znswriter = csv.writer(csvoutfile, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+		znswriter = csv.writer(csvoutfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 		znswriter.writerow(['Zone Name'] + list(f'Channel{i}' for i in range(1, rowct)))
 		for elem in channelTypesDict:
 			channelTypesDict[elem].sort(key=get_channelNameDistance)

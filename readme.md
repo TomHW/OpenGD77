@@ -1,4 +1,7 @@
-convert
+> [!WARNING]
+> Working on making this work for US. It is not ready for general use! Hard coded to work for Oregon and Washington, will support more states/countries in the future.
+
+RepeaterBook to OpenGD77 w/Zones
 =======
 Python script to support the creation of OpenGD77 CPS files.
 

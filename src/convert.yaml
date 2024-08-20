@@ -1,15 +1,14 @@
 Mode: Load               # Should be 'Default', 'Load' or 'Dump'
-Country: Germany
+Country: United%20States
+States:
+  - Oregon
+  - Washington
 Zones:
-  Berlin:
-    Latitude: 52.5069386
-    Longitude: 13.2599274
-    MaxDistance: 100
-  Muenchen:
-    Latitude: 48.1549958
-    Longitude: 11.4594357
-    MaxDistance: 150
-  Frankfurt:
-    Latitude: 50.1210147
-    Longitude: 8.3247634
-    MaxDistance: 100
+  Portland:
+    Latitude: 45.52345
+    Longitude: -122.67621
+    MaxDistance: 50
+  Seattle:
+    Latitude: 47.60621
+    Longitude: -122.33207
+    MaxDistance: 50
