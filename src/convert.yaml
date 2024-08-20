@@ -1,5 +1,5 @@
 Mode: Load               # Should be 'Default', 'Load' or 'Dump'
-Country: United%20States
+Country: United States
 States:
   - Oregon
   - Washington
@@ -7,6 +7,7 @@ Zones:
   Portland:
     Latitude: 45.52345
     Longitude: -122.67621
+    # MaxDistance is in KM. 50 km is about 30 miles. 
     MaxDistance: 50
   Seattle:
     Latitude: 47.60621

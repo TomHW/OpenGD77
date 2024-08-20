@@ -166,10 +166,28 @@ def main(argv):
 	with open("convert.yaml","r") as conffile:
 		data = yaml.load(conffile,Loader=yaml.SafeLoader)
 
-	myCountry = data['Country']		# Repeaterbook query for this country
+	myCountry = data['Country'] # Repeaterbook query for this country
 	myZones = data['Zones']
 	mode = data['Mode']
-	
+	myQuery = "https://www.repeaterbook.com/api/"
+
+
+	# Lets figure out what endpoint to hit
+	if (myCountry == 'United States' or myCountry == 'Canada'):
+		myQuery += 'export.php?'
+	else: 
+		myQuery += 'exportROW.php?'
+
+	# now add country
+	myQuery += "country=" + myCountry
+
+	# if States are included add those
+	if 'States' in data.keys():
+		for state in data['States']:
+			myQuery +=  "&state=" + state 
+
+	#print(myQuery)
+
 	if(mode == 'Load'):
 		with open('dump.bin', 'rb') as dumpfile:
 			channels2m = pickle.load(dumpfile)
@@ -177,9 +195,9 @@ def main(argv):
 	else:
 		# TODO: Url is different for rest of World (ROW), and need to make states part of the Yaml. Only pulling Analog channels for now
 		# 2m Band
-		url = f'https://www.repeaterbook.com/api/export.php?country={myCountry}&state=oregon&state=washington&mode=analog&frequency=14%'
+		url = f'{myQuery}&frequency=14%'
 		channels2m = get_repeaters(url)
-		url = f'https://www.repeaterbook.com/api/export.php?country={myCountry}&state=oregon&state=washington&mode=analog&frequency=4%'
+		url = f'{myQuery}&frequency=4%'
 		channels70cm = get_repeaters(url)
 		if(mode == 'Dump'):
 			with open('dump.bin', 'wb') as dumpfile:
