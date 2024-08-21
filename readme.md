@@ -1,9 +1,9 @@
 > [!WARNING]
-> Working on making this work for US. It is not ready for general use! Hard coded to work for Oregon and Washington, will support more states/countries in the future.
+> This is still a work in progress and may not work 100% correctly.
 
 RepeaterBook to OpenGD77 w/Zones
 =======
-Python script to support the creation of OpenGD77 CPS files.
+Python script to support the creation of OpenGD77 CPS files. Supports North America and Rest of World (in theory).
 
 Gets 2m and 70cm band repeaters from repeaterbook and creates Zones.csv and Channels.csv for OpenGD77 CPS.
 Needs configuration in convert.yaml.
@@ -30,10 +30,16 @@ Needs an installed Python3 interpreter and requires the modules
 * csv
 * sys
 * pickle
-* yaml
+* yaml (which is pyyaml)
+
+Install Python: https://www.python.org/downloads/
+
+Run this commands in terminal:
+`pip install requests`
+`pip install pyyaml`
 
 Edit  _convert.yaml_  for your needs, then call
 
-`./convert.py`
+`python 3convert.py`
 
 The files  _Channels.csv_  and  _Zones.csv_  are created and should be imported into OpenGD77 CPS.
