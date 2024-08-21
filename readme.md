@@ -42,6 +42,6 @@ Run these commands in terminal:
 
 Edit  _convert.yaml_  for your needs, then call
 
-`python 3convert.py`
+`python3 convert.py`
 
 The files  _Channels.csv_  and  _Zones.csv_  are created and should be imported into OpenGD77 CPS.
