@@ -1,9 +1,11 @@
 Mode: Dump               # Should be 'Default', 'Load' or 'Dump'
 Country: United States
-States: 
+States: # Only Choose States you need. 
   - Oregon
   - Washington
-Zones:
+Decimal: Point
+Zones: 
+#  Max 80 Channels per Zone, will add the closest repeaters if over 80 are found
   Portland:
     Latitude: 45.52345
     Longitude: -122.67621
@@ -15,8 +17,11 @@ Zones:
     MaxDistance: 50
 
 
-# Mode: Load               # Should be 'Default', 'Load' or 'Dump'
+# Orginal Example for outside of United States
+
+# Mode: Default               # Should be 'Default', 'Load' or 'Dump'
 # Country: Germany
+# Decimal: Comma
 # Zones:
 #   Berlin:
 #     Latitude: 52.5069386
