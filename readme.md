@@ -34,8 +34,9 @@ Needs an installed Python3 interpreter and requires the modules
 
 Install Python: https://www.python.org/downloads/
 
-Run this commands in terminal:
+Run these commands in terminal:
 `pip install requests`
+
 `pip install pyyaml`
 
 Edit  _convert.yaml_  for your needs, then call
