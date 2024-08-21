@@ -318,7 +318,7 @@ def main(argv):
 		znswriter.writerow(['Zone Name'] + list(f'Channel{i}' for i in range(1, maxZoneChannels + 1)))
 		for elem in channelTypesDict:
 			channelTypesDict[elem].sort(key=get_channelNameDistance)
-			znswriter.writerow([elem] + list((str(nd[0]) for nd in channelTypesDict[elem])) + list([None for i in range(maxZoneChannels - len(channelTypesDict[elem]) -1)]))
+			znswriter.writerow([elem] + list((str(nd[0]) for nd in channelTypesDict[elem])) + list([None for i in range(maxZoneChannels - len(channelTypesDict[elem]) )]))
 
 	exit(0)
 	
