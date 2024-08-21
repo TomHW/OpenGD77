@@ -69,7 +69,7 @@ def get_repeaters(url):
 			for rep in repeaters:
 				#  TODO: Add Digital channels back, excluding them for now
 				# if(rep['Operational Status'] == 'On-air' and (rep['DMR'] == 'No' or rep['FM Analog'] == 'Yes')):
-				if(rep['Operational Status'] == 'On-air' and rep['Use'] == 'OPEN' and rep['FM Analog'] == 'Yes'):
+				if(rep['Operational Status'] == 'On-air' and rep['Use'] == 'OPEN' and (rep['DMR'] == 'Yes' or rep['FM Analog'] == 'Yes')):
 					# print(rep)
 					result.append(rep)
 			return result
@@ -278,20 +278,16 @@ def main(argv):
 		for ch in zchannels:
 			channelName = ch['Channel Name']
 			zone = zoneName
-		# 	# TODO: Zone name could be better
-		# 	# zone = zoneName + ' ' + t
 			if(zone in channelTypesDict):
 				channelTypesDict[zone].append([channelName, dist])
 			else:
 				channelTypesDict[zone] = list([[channelName, dist]])
 
 
-		# add channel name to Analogue Zone
+		# add channel name to Digital Zone
 		for ch in zchannelsDMR:
 			channelName = ch['Channel Name']
 			zone = zoneName + ' DMR'
-		# 	# TODO: Zone name could be better
-		# 	# zone = zoneName + ' ' + t
 			if(zone in channelTypesDict):
 				channelTypesDict[zone].append([channelName, dist])
 			else:
