@@ -70,33 +70,40 @@ def get_repeaters(url):
 #Map repeaterbook entry to GD77 channel format
 def map_rep2chn(rep):
 	chn = {}
-	chn['Contact'] = 'None'
+	chn['Contact'] = 'None' if(rep['DMR'] == 'Yes') else ''
+	chn['Timeslot'] = '1' if(rep['DMR'] == 'Yes') else ''
 	chn['DMR ID'] = 'None'
-	chn['TS1_TA_Tx'] = 'Off'
-	chn['TS2_TA_Tx ID'] = 'Off'
+	chn['TS1_TA_Tx'] = 'Text' if(rep['DMR'] == 'Yes') else ''
+	chn['TS2_TA_Tx ID'] = 'Text' if(rep['DMR'] == 'Yes') else ''
+	chn['Squelch'] = '' if(rep['DMR'] == 'Yes') else 'Disabled'
 	chn['Power'] = 'Master'
 	chn['Rx Only'] = 'No'
 	chn['Zone Skip'] = 'No'
 	chn['All Skip'] = 'No'
 	chn['TOT'] = 495
-	chn['VOX'] = 'No'
+	chn['VOX'] = 'Off'
 	chn['No Beep'] = 'No'
 	chn['No Eco'] = 'No'
-	chn['APRS'] = 'No'
+	chn['APRS'] = 'None'
 #	chn[''] = rep['State ID']
 #	chn[''] = rep['Rptr ID']
 	chn['Tx Frequency'] = rep['Input Freq'].replace('.', ',')
 	chn['Rx Frequency'] = rep['Frequency'].replace('.', ',')
-	chn['RX Tone'] = rep['PL'].replace('.', ',') if rep['PL'] != 'CSQ' else None
-	chn['Squelch'] = rep['TSQ'].replace('.', ',')
+	if(rep['DMR'] != 'Yes'):
+		chn['TX Tone'] = rep['PL'].replace('.', ',') if(rep['PL'] != 'CSQ') else 'None'
+		chn['RX Tone'] = rep['TSQ'].replace('.', ',') if(rep['TSQ'] != '') else 'None'
 #	chn[''] = rep['Landmark']
 #	chn[''] = rep['Region']
 #	chn[''] = rep['State']
 #	chn[''] = rep['Country']
 	chn['Latitude'] = rep['Lat'].replace('.', ',')
 	chn['Longitude'] = rep['Long'].replace('.', ',')
+	chn['Use location'] = 'Yes'
 #	chn[''] = rep['Precise']
-	chn['Channel Name'] = (rep['Callsign'] + ' '  + rep['Nearest City'])[:15]
+	band = ' '
+	if(float(rep['Input Freq']) > 146):
+		band = '#'
+	chn['Channel Name'] = (band + rep['Callsign'] + ' '  + rep['Nearest City'])[:15]
 #	chn[''] = rep['Use']
 #	chn[''] = rep['Operational Status']
 #	chn[''] = rep['ARES']
@@ -171,7 +178,7 @@ def main(argv):
 				pickle.dump(channels70cm, dumpfile)
 	channelTypesDict = {}
 	channels = []
-	channelHeading = ['Channel Number', 'Channel Name', 'Channel Type', 'Rx Frequency', 'Tx Frequency', 'Bandwidth (kHz)', 'Colour Code', 'Timeslot', 'Contact', 'TG List', 'DMR ID', 'TS1_TA_Tx ID', 'TS2_TA_Tx ID', 'RX Tone', 'TX Tone', 'Squelch', 'Power', 'Rx Only', 'Zone Skip', 'All Skip', 'TOT', 'VOX', 'No Beep', 'No Eco', 'APRS', 'Latitude', 'Longitude']
+	channelHeading = ['Channel Number', 'Channel Name', 'Channel Type', 'Rx Frequency', 'Tx Frequency', 'Bandwidth (kHz)', 'Colour Code', 'Timeslot', 'Contact', 'TG List', 'DMR ID', 'TS1_TA_Tx', 'TS2_TA_Tx ID', 'RX Tone', 'TX Tone', 'Squelch', 'Power', 'Rx Only', 'Zone Skip', 'All Skip', 'TOT', 'VOX', 'No Beep', 'No Eco', 'APRS', 'Latitude', 'Longitude', 'Use location']
 	rowct = 0
 	for zoneName in myZones:
 		global lat
@@ -191,6 +198,7 @@ def main(argv):
 				else:
 					channelName = chn ['Channel Name']
 				zone = zoneName + ' ' + t
+				# channelName isn't unique, need to recognize duplicates! Use dictonary instead of list!
 				if(zone in channelTypesDict):
 					channelTypesDict[zone].append([channelName, dist])
 				else:
