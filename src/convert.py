@@ -72,7 +72,7 @@ def map_rep2chn(rep):
 	chn = {}
 	chn['Contact'] = 'None' if(rep['DMR'] == 'Yes') else ''
 	chn['Timeslot'] = '1' if(rep['DMR'] == 'Yes') else ''
-	chn['DMR ID'] = 'None'
+	chn['DMR ID'] = 'None'		# Default is empty, set your own DMR ID if you work with different IDs per channel!
 	chn['TS1_TA_Tx'] = 'Text' if(rep['DMR'] == 'Yes') else ''
 	chn['TS2_TA_Tx ID'] = 'Text' if(rep['DMR'] == 'Yes') else ''
 	chn['Squelch'] = '' if(rep['DMR'] == 'Yes') else 'Disabled'
@@ -128,7 +128,6 @@ def map_rep2chn(rep):
 		else:
 			chn['Channel Type'] = ['Digital']
 	chn['Colour Code'] = rep['DMR Color Code']
-	chn['DMR ID'] = rep['DMR ID']
 #	chn[''] = rep['D-Star']
 #	chn[''] = rep['NXDN']
 #	chn[''] = rep['APCO P-25']
