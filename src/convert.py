@@ -232,6 +232,7 @@ def main(argv):
 
 	with open('Zones.csv', 'wt', newline='') as csvoutfile:
 		znswriter = csv.writer(csvoutfile, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+		rowct = max(rowct, 180)
 		znswriter.writerow(['Zone Name'] + list(f'Channel{i}' for i in range(1, rowct)))
 		for elem in channelTypesDict:
 			channelTypesDict[elem].sort(key=get_channelNameDistance)
