@@ -1,6 +1,8 @@
 Mode: Dump               # Should be 'Default', 'Load' or 'Dump'
 Country: United States
-email:   #  Valid Email
+Email:  #  Valid Email
+# If your radio has GPS, UseLocation will enable calculating the distance from the tower and will allow sorting by distance
+UseLocation: Yes
 States: # Only Choose States you need. 
   - Oregon
   # - Washington
