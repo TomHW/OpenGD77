@@ -3,7 +3,7 @@ Country: United States
 email:   #  Valid Email
 States: # Only Choose States you need. 
   - Oregon
-  - Washington
+  # - Washington
 Decimal: Point
 Zones: 
 #  Max 80 Channels per Zone, will add the closest repeaters if over 80 are found
@@ -12,10 +12,10 @@ Zones:
     Longitude: -122.67621
     # MaxDistance is in KM. 50 km is about 30 miles. 
     MaxDistance: 50
-  Seattle:
-    Latitude: 47.60621
-    Longitude: -122.33207
-    MaxDistance: 50
+  # Seattle:
+  #   Latitude: 47.60621
+  #   Longitude: -122.33207
+  #   MaxDistance: 50
 
 
 # Orginal Example for outside of United States
