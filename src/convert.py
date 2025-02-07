@@ -50,10 +50,9 @@ def distance(lat1, lon1, lat2, lon2):
 	return d
 
 #Download repeaters from repeaterbook (json format)
-def get_repeaters(url):
+def get_repeaters(url, email):
 	headers = {
-	    'User-Agent': 'Toms channel creator 0.2',
-	    'From': 'do3thm@tibeto.de'
+	    'User-Agent': email
 	}
 	response = requests.get(url, headers=headers)
 	if(response.status_code < 400 ):
@@ -183,6 +182,7 @@ def main(argv):
 	myZones = data['Zones']
 	mode = data['Mode']
 	decimal = data['Decimal']
+	email = data['email']
 	myQuery = "https://www.repeaterbook.com/api/"
 
 
@@ -211,11 +211,11 @@ def main(argv):
 				print(f'Calling {state} 2m')
 				time.sleep(10) # Lets be respectful of not hitting the endpoint too quickly
 				url = f'{myQuery}&state={state}&frequency=14%' # 2m Band
-				channels2m += get_repeaters(url)
+				channels2m += get_repeaters(url, email)
 				time.sleep(30) # Lets be respectful of not hitting the endpoint too quickly
 				print(f'Calling {state} 70cm')
 				url = f'{myQuery}&state={state}&frequency=4%' # 70cm band
-				channels70cm += get_repeaters(url)
+				channels70cm += get_repeaters(url,email)
 				time.sleep(10) # Lets be respectful of not hitting the endpoint too quickly
 		else: # rest of world and Canada
 			print('Calling 2m')

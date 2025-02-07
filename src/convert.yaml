@@ -1,5 +1,6 @@
 Mode: Dump               # Should be 'Default', 'Load' or 'Dump'
 Country: United States
+email:   #  Valid Email
 States: # Only Choose States you need. 
   - Oregon
   - Washington

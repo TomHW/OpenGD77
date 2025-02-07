@@ -1,6 +1,9 @@
 > [!WARNING]
 > Working on making this work for US. It is not ready for general use! Hard coded to work for Oregon and Washington, will support more states/countries in the future.
 
+Repeater book now requires an valid email to make calls and eventually will need an api key. More detauks cab ve found here <https://www.repeaterbook.com/wiki/doku.php?id=api&s[]=api>
+
+
 RepeaterBook to OpenGD77 w/Zones
 =======
 Python script to support the creation of OpenGD77 CPS files.
