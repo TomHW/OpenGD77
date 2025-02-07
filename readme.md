@@ -5,9 +5,9 @@ Repeater book now requires an valid email to make calls and eventually will need
 
 RepeaterBook supports OpenGD77!
 
-It's tucked away under Export->Radioddity->OpenGD77 Channels File.
+It's tucked away under Export->Radioddity->OpenGD77 Channels File. You can then load it in to OpenGD77 CPS using File->CSV-Append CSV.
 
-You can then load it in to OpenGD77 CPS using File->CSV-Append CSV.
+This script creates zones with channels. It makes it a bit easier for organizing and importing into OpenGD77. 
 
 RepeaterBook to OpenGD77 w/Zones
 =======
