@@ -3,6 +3,11 @@
 
 Repeater book now requires an valid email to make calls and eventually will need an api key. More details can be found here <https://www.repeaterbook.com/wiki/doku.php?id=api&s[]=api>
 
+RepeaterBook supports OpenGD77!
+
+It's tucked away under Export->Radioddity->OpenGD77 Channels File.
+
+You can then load it in to OpenGD77 CPS using File->CSV-Append CSV.
 
 RepeaterBook to OpenGD77 w/Zones
 =======
