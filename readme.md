@@ -1,7 +1,7 @@
 > [!WARNING]
 > This is still a work in progress and may not work 100% correctly.
 
-Repeater book now requires an valid email to make calls and eventually will need an api key. More detauks cab ve found here <https://www.repeaterbook.com/wiki/doku.php?id=api&s[]=api>
+Repeater book now requires an valid email to make calls and eventually will need an api key. More details can be found here <https://www.repeaterbook.com/wiki/doku.php?id=api&s[]=api>
 
 
 RepeaterBook to OpenGD77 w/Zones
