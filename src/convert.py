@@ -50,8 +50,8 @@ def distance(lat1, lon1, lat2, lon2):
 #Download repeaters from repeaterbook (json format)
 def get_repeaters(url):
 	headers = {
-	    'User-Agent': 'Toms channel creator 0.1',
-	    'From': 'do3thm@tibeto.de'
+	    'User-Agent': 'Toms channel creator 0.1, <da1th@darc.de>',
+	    'From': 'da1th@darc.de'
 	}
 	response = requests.get(url, headers=headers)
 	if(response.status_code < 400 ):
@@ -72,7 +72,7 @@ def map_rep2chn(rep):
 	chn = {}
 	chn['Contact'] = 'None' if(rep['DMR'] == 'Yes') else ''
 	chn['Timeslot'] = '1' if(rep['DMR'] == 'Yes') else ''
-	chn['DMR ID'] = 'None'		# Default is empty, set your own DMR ID if you work with different IDs per channel!
+	chn['DMR ID'] = 'None'
 	chn['TS1_TA_Tx'] = 'Text' if(rep['DMR'] == 'Yes') else ''
 	chn['TS2_TA_Tx ID'] = 'Text' if(rep['DMR'] == 'Yes') else ''
 	chn['Squelch'] = '' if(rep['DMR'] == 'Yes') else 'Disabled'
@@ -128,6 +128,7 @@ def map_rep2chn(rep):
 		else:
 			chn['Channel Type'] = ['Digital']
 	chn['Colour Code'] = rep['DMR Color Code']
+	chn['DMR ID'] = rep['DMR ID']
 #	chn[''] = rep['D-Star']
 #	chn[''] = rep['NXDN']
 #	chn[''] = rep['APCO P-25']
@@ -232,7 +233,6 @@ def main(argv):
 
 	with open('Zones.csv', 'wt', newline='') as csvoutfile:
 		znswriter = csv.writer(csvoutfile, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-		rowct = max(rowct, 180)
 		znswriter.writerow(['Zone Name'] + list(f'Channel{i}' for i in range(1, rowct)))
 		for elem in channelTypesDict:
 			channelTypesDict[elem].sort(key=get_channelNameDistance)
