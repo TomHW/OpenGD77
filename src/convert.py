@@ -2,7 +2,7 @@
 '''
 Created on 19.06.2024
 
-@author: sesth - Thomas Hoffmann <do3thm@tibeto.de>
+@author: sesth - Thomas Hoffmann <da1th@darc.de>
 
 Gets 2m and 70cm band repeaters from repeaterbook and creates Zones.csv and Channels.csv for OpenGD77 CPS.
 Needs configuration in convert.yaml.
@@ -72,7 +72,7 @@ def map_rep2chn(rep):
 	chn = {}
 	chn['Contact'] = 'None' if(rep['DMR'] == 'Yes') else ''
 	chn['Timeslot'] = '1' if(rep['DMR'] == 'Yes') else ''
-	chn['DMR ID'] = 'None'
+	chn['DMR ID'] = 'None'		# Default is empty, set your own DMR ID if you work with different IDs per channel!
 	chn['TS1_TA_Tx'] = 'Text' if(rep['DMR'] == 'Yes') else ''
 	chn['TS2_TA_Tx ID'] = 'Text' if(rep['DMR'] == 'Yes') else ''
 	chn['Squelch'] = '' if(rep['DMR'] == 'Yes') else 'Disabled'
@@ -128,7 +128,6 @@ def map_rep2chn(rep):
 		else:
 			chn['Channel Type'] = ['Digital']
 	chn['Colour Code'] = rep['DMR Color Code']
-	chn['DMR ID'] = rep['DMR ID']
 #	chn[''] = rep['D-Star']
 #	chn[''] = rep['NXDN']
 #	chn[''] = rep['APCO P-25']
@@ -233,6 +232,7 @@ def main(argv):
 
 	with open('Zones.csv', 'wt', newline='') as csvoutfile:
 		znswriter = csv.writer(csvoutfile, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+		rowct = max(rowct, 180)
 		znswriter.writerow(['Zone Name'] + list(f'Channel{i}' for i in range(1, rowct)))
 		for elem in channelTypesDict:
 			channelTypesDict[elem].sort(key=get_channelNameDistance)
