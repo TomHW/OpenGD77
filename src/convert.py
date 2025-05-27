@@ -154,7 +154,10 @@ def get_distance(chnDict):
 	return distance(float(chnDict['Latitude'].replace(',', '.')), float(chnDict['Longitude'].replace(',', '.')), lat, lon)
 
 def main(argv):
-	with open("convert.yaml","r") as conffile:
+	cf = "convert.yaml"
+	if(len(argv) > 0):
+		cf = argv[0]
+	with open(cf,"r") as conffile:
 		data = yaml.load(conffile,Loader=yaml.SafeLoader)
 
 	myCountry = data['Country']		# Repeaterbook query for this country
