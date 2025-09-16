@@ -68,13 +68,13 @@ def get_repeaters(url):
 		return None
 
 #Map repeaterbook entry to GD77 channel format
-def map_rep2chn(rep):
+def map_rep2chn(rep, ts1_ta, ts2_ta, fm_bw):
 	chn = {}
 	chn['Contact'] = 'None' if(rep['DMR'] == 'Yes') else ''
 	chn['Timeslot'] = '1' if(rep['DMR'] == 'Yes') else ''
 	chn['DMR ID'] = 'None'		# Default is empty, set your own DMR ID if you work with different IDs per channel!
-	chn['TS1_TA_Tx'] = 'Text' if(rep['DMR'] == 'Yes') else ''
-	chn['TS2_TA_Tx ID'] = 'Text' if(rep['DMR'] == 'Yes') else ''
+	chn['TS1_TA_Tx'] = ts1_ta if(rep['DMR'] == 'Yes') else ''
+	chn['TS2_TA_Tx ID'] = ts2_ta if(rep['DMR'] == 'Yes') else ''
 	chn['Squelch'] = '' if(rep['DMR'] == 'Yes') else 'Disabled'
 	chn['Power'] = 'Master'
 	chn['Rx Only'] = 'No'
@@ -119,7 +119,7 @@ def map_rep2chn(rep):
 			chn['Channel Type'].append('Analogue')
 		else:
 			chn['Channel Type'] = ['Analogue']
-	chn['Bandwidth (kHz)'] = rep['FM Bandwidth'].replace('.', ',').replace(' kHz', '') if (not rep['FM Bandwidth'] is None) else None
+		chn['Bandwidth (kHz)'] = rep['FM Bandwidth'].replace('.', ',').replace(' kHz', '') if (len(rep['FM Bandwidth']) > 0) else fm_bw
 #	chn[''] = rep['DMR']
 	if(rep['DMR'] == 'Yes'):
 		chn['TG List'] = 'BM'
@@ -154,10 +154,7 @@ def get_distance(chnDict):
 	return distance(float(chnDict['Latitude'].replace(',', '.')), float(chnDict['Longitude'].replace(',', '.')), lat, lon)
 
 def main(argv):
-	cf = "convert.yaml"
-	if(len(argv) > 0):
-		cf = argv[0]
-	with open(cf,"r") as conffile:
+	with open("convert.yaml","r") as conffile:
 		data = yaml.load(conffile,Loader=yaml.SafeLoader)
 
 	myCountry = data['Country']		# Repeaterbook query for this country
@@ -192,7 +189,7 @@ def main(argv):
 			dist = distance(float(row['Lat']), float(row['Long']), myZones[zoneName]['Latitude'], myZones[zoneName]['Longitude'])
 			if(dist > myZones[zoneName]['MaxDistance']):
 				continue
-			chn = map_rep2chn(row)
+			chn = map_rep2chn(row, data['TS1-TA'], data['TS2-TA'], data['FM-Bandwidth'])
 			# add channel name to zone
 			for t in chn['Channel Type']:
 				if (t == 'Digital'):
