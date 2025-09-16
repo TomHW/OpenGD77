@@ -1,5 +1,8 @@
 Mode: Load               # Should be 'Default', 'Load' or 'Dump'
 Country: Germany
+FM-Bandwidth: 25            # Default FM-Bandwidth if not defined (12.5 or 25)
+TS1-TA: APRS                # Timeslot 1 DMR Talker Alias (Off, APRS, Text, APRS+Text)
+TS2-TA: APRS                # Timeslot 2 DMR Talker Alias (Off, APRS, Text, APRS+Text)
 Zones:
   Berlin:
     Latitude: 52.5069386
