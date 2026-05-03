@@ -1,4 +1,6 @@
 Mode: Load               # Should be 'Default', 'Load' or 'Dump'
+User-Agent: OpenGD77 channel creator 0.1, <da1th@darc.de>
+API-Token: Insert your token here!
 Country: Germany
 FM-Bandwidth: 25            # Default FM-Bandwidth if not defined (12.5 or 25)
 TS1-TA: APRS                # Timeslot 1 DMR Talker Alias (Off, APRS, Text, APRS+Text)
