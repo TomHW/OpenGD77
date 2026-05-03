@@ -48,10 +48,10 @@ def distance(lat1, lon1, lat2, lon2):
 	return d
 
 #Download repeaters from repeaterbook (json format)
-def get_repeaters(url):
+def get_repeaters(url, ua, at):
 	headers = {
-	    'User-Agent': 'Toms channel creator 0.1, <da1th@darc.de>',
-	    'From': 'da1th@darc.de'
+	    'User-Agent': ua,
+	    'X-RB-App-Token': at
 	}
 	response = requests.get(url, headers=headers)
 	if(response.status_code < 400 ):
@@ -154,12 +154,17 @@ def get_distance(chnDict):
 	return distance(float(chnDict['Latitude'].replace(',', '.')), float(chnDict['Longitude'].replace(',', '.')), lat, lon)
 
 def main(argv):
-	with open("convert.yaml","r") as conffile:
+	confn = "convert.yaml"
+	if(len(argv) > 0):
+		confn = argv[0]
+	with open(confn,"r") as conffile:
 		data = yaml.load(conffile,Loader=yaml.SafeLoader)
 
 	myCountry = data['Country']		# Repeaterbook query for this country
 	myZones = data['Zones']
 	mode = data['Mode']
+	at = data['API-Token']
+	ua = data['User-Agent']
 	
 	if(mode == 'Load'):
 		with open('dump.bin', 'rb') as dumpfile:
@@ -168,9 +173,9 @@ def main(argv):
 	else:
 		# 2m Band
 		url = f'https://www.repeaterbook.com/api/exportROW.php?country={myCountry}&frequency=14%'
-		channels2m = get_repeaters(url)
+		channels2m = get_repeaters(url, ua, at)
 		url = f'https://www.repeaterbook.com/api/exportROW.php?country={myCountry}&frequency=43%'
-		channels70cm = get_repeaters(url)
+		channels70cm = get_repeaters(url, ua, at)
 		if(mode == 'Dump'):
 			with open('dump.bin', 'wb') as dumpfile:
 				pickle.dump(channels2m, dumpfile)
